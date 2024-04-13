@@ -18,3 +18,5 @@ export const Listado: FunctionComponent<PerfilesData> = ({ perfiles }) => {
     </div>
   );
 };
+
+export default Listado;

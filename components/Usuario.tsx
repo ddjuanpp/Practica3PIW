@@ -2,7 +2,7 @@ import { FunctionComponent } from "preact";
 import { Perfiles } from "../types.ts";
 
 
-export const Usuario: FunctionComponent<Perfiles> = ( props ) => {
+export const Usuario: FunctionComponent<Perfiles> = ( props: Perfiles ) => {
   const {name, photo, age, sex, description, hobbies, comments} = props;
   return (
     <div class="Perfil-Card">
@@ -16,11 +16,11 @@ export const Usuario: FunctionComponent<Perfiles> = ( props ) => {
         <p>{description}</p>
         <h2>Hobbies:</h2>
         <p>
-          {hobbies.map(h => <ul>{h}</ul>)}
+          {hobbies.length>0 && (hobbies.map(h => <ul>{h}</ul>))}
         </p>
         <h2>Comentarios:</h2>
         <p>
-          {comments.map(c => <ul>{c.user}: {c.message}</ul>)}
+          {Array.isArray(comments) && comments.length > 0 && comments.map(c => <ul>{c.user}: {c.message}</ul>)}
         </p>
     </div>
   );

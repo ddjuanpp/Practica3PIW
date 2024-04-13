@@ -14,39 +14,45 @@ type Busqueda = {
   hobbies: string;
 };
 
-const FilterManager: FunctionComponent<PerfilData> = ({ perfiles }) => {
+const FilterManager: FunctionComponent<PerfilData> = ( props ) => {
+  const { perfiles } = props;
   const [name, setName] = useState<string>("");
   const [age, setAge] = useState<number>(0);
   const [sex, setSex] = useState<string>("");
   const [hobbies, setHobbies] = useState<string>("");
-  const [filter, setFilter] = useState<Busqueda>({name: "",age: 0,sex: "",hobbies: ""});
+  const [perfilesFiltrados, setPerfilesFiltrados] = useState<Perfiles[]>(perfiles);
 
-  const hobbiesFiltro = filter.hobbies.split(", ").map((h) => h.trim()).filter((ho) => ho !== "");
+  const handleFilter = () => {
+    const hobbiesFiltro = hobbies.split(", ").map((h) => h.trim()).filter((ho) => ho !== "");
 
-  const perfilFiltro = perfiles.filter((p) => {
-    const Name = filter.name === "" || p.name === filter.name;
-    const Age = filter.age === 0 || p.age === filter.age;
-    const Sex = filter.sex === "" || p.sex === filter.sex;
-    const Hobbies = hobbiesFiltro.length === 0 || hobbiesFiltro.every((h) => p.hobbies.includes(h));
+    const perfilFiltro = perfiles ? perfiles.filter((p) => {
+      const Name = name === "" || p.name.includes(name);
+      const Age = age === 0 || p.age === age;
+      const Sex = sex === "" || p.sex === sex;
+      const Hobbies = hobbiesFiltro.length === 0 || hobbiesFiltro.every((h) => p.hobbies.includes(h));
 
-    return Name && Age && Sex && Hobbies;
-  });
+      return Name && Age && Sex && Hobbies;
+    }) : [];
+
+    setPerfilesFiltrados(perfilFiltro);
+
+  };
 
   return (
     <>
-      <div class="Filtrar">
+      <div class="Filtrar" action="/1_2filtrarPage" method="GET">
         <input type="text"   name="name"    placeholder="Name"    value={name}    onBlur={(e) => setName(e.currentTarget.value)}/>
         <input type="number" name="age"     placeholder="Age"     value={age}     onBlur={(e) => setAge(parseInt(e.currentTarget.value))}/>
         <input type="text"   name="sex"     placeholder="Sex"     value={sex}     onBlur={(e) => setSex(e.currentTarget.value)}/>
         <input type="text"   name="hobbies" placeholder="Hobbies" value={hobbies} onBlur={(e) => setHobbies(e.currentTarget.value)}/>
-        <button onClick={() => setFilter({ name, age, sex, hobbies })}>
+        <button onClick={handleFilter}>
           Filter
         </button>
       </div>
       <div class="">
-        {perfilFiltro.map((p) => (
-          <Usuario {...p} />
-        ))}
+        {perfilesFiltrados ? perfilesFiltrados.map((p) => (
+          <Usuario {...p} /> 
+        )): "No hay perfiles que mostrar"}
       </div>
     </>
   );

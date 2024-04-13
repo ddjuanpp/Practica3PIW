@@ -1,5 +1,4 @@
-import { FreshContext, Handlers } from "$fresh/server.ts";
-import { FunctionComponent } from "preact";
+import { FreshContext, Handlers, PageProps } from "$fresh/server.ts";
 import axios from "npm:axios";
 import { Perfiles } from "../types.ts";
 import FilterManager from "../islands/FilterManager.tsx";
@@ -9,25 +8,24 @@ type PerfilData = {
 };
 
 export const handler: Handlers<unknown> = {
-  POST: async (_req: Request, ctx: FreshContext<unknown, unknown>) => {
-    const u = new URL(ctx.url);
-    const perfil = u.searchParams.get("name");
+  GET: async (_req: Request, ctx: FreshContext<unknown, unknown>) => {
     
 
-    const response = await axios.get<PerfilData>(`https://lovers.deno.dev/${perfil}`);
+    const response = await axios.get<PerfilData>(`https://lovers.deno.dev/`);
     if (response.status !== 200) {
       console.error("Error fetching perfil");
       throw new Error("Error fetching perfil");
     }
 
-    return ctx.render(response.data);
+    return ctx.render({perfiles: response.data});
   },
 };
 
-const Home: FunctionComponent<PerfilData> = ({ perfiles }) => {
-    return (
-      <FilterManager perfiles={perfiles} />
-    );
+export function Home(props: PageProps<PerfilData>) {
+  const perfiless = props.data.perfiles
+  return (
+    <FilterManager perfiles={perfiless} />
+  );
 }
 
 export default Home;
